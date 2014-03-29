@@ -79,4 +79,11 @@ io.sockets.on('connection', function(socket) {
         }
     });
 
+    socket.on('action', function(action) {
+        var action = 'NRC_' + action.toUpperCase() + '-ONOFF';
+        if(!sendRequest(ipAddress, 'command', 'X_SendKey', '<X_KeyEvent>' + action + '</X_KeyEvent>')) {
+            socket.emit('actionError', { error: "internal error" });
+        }
+    });
+
 });
