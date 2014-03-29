@@ -79,6 +79,19 @@ io.sockets.on('connection', function(socket) {
         }
     });
 
+    function getVolume() {
+        var self = this;
+        sendRequest(ipAddress, 'render', 'GetVolume', '<InstanceID>0</InstanceID><Channel>Master</Channel>', {
+            callback: function(data){
+                var match = /<CurrentVolume>(\d*)<\/CurrentVolume>/gm.exec(data);
+                if(match !== null){
+                    socket.emit('volume', { volume: match[1] });
+                }
+            }
+        });
+    }
+    setInterval(getVolume, 1500);
+
     socket.on('action', function(action) {
         var action = 'NRC_' + action.toUpperCase() + '-ONOFF';
         if(!sendRequest(ipAddress, 'command', 'X_SendKey', '<X_KeyEvent>' + action + '</X_KeyEvent>')) {
