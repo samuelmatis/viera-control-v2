@@ -49,7 +49,7 @@ var sendRequest = function(ipAddress, type, action, command, options) {
     if (options !== undefined) {
         self.callback = options['callback'];
     } else {
-        self.callback = function(data) { console.log(data); };
+        self.callback = function(data) { console.log("Command:", command); };
     }
 
     var req = http.request(postRequest, function(res) {
@@ -58,7 +58,7 @@ var sendRequest = function(ipAddress, type, action, command, options) {
     });
 
     req.on('error', function(e) {
-        console.log('Error' + e);
+        console.log('Error ' + e);
         return false;
     });
 
