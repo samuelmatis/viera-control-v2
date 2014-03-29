@@ -91,7 +91,7 @@ io.sockets.on('connection', function(socket) {
             }
         });
     }
-    setInterval(getVolume, 1500);
+    setInterval(getVolume, 1000);
 
     socket.on('action', function(action) {
         var action = 'NRC_' + action.toUpperCase() + '-ONOFF';
