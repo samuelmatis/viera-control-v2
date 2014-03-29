@@ -65,3 +65,18 @@ var sendRequest = function(ipAddress, type, action, command, options) {
     req.write(body);
     req.end();
 };
+
+// Define WebSockets connections
+io.sockets.on('connection', function(socket) {
+
+    var ipAddress;
+    socket.on('ipAddressSet', function(ip) {
+        var ipRegExp = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/;
+        if(ipRegExp.test(ip)) {
+            ipAddress = ip;
+        } else {
+            socket.emit('ipAddressError', { error: "Invalid IP address" });
+        }
+    });
+
+});
