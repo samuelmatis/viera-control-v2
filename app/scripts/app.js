@@ -1,14 +1,34 @@
-var socket = io.connect('http://localhost:3000');
+var socket = io.connect(window.location.href);
+
+var ipConfigButton = document.querySelector('.js-ip-config')
+    , actionButtons = document.querySelectorAll('.btn-action')
+    , ipModal = document.querySelector('#ipModal')
+    , ipModalField = document.querySelector('#ipField')
+    , ipModalSave = document.querySelector('.js-ip-save')
+    , statusText = document.querySelector('.vol')
+
+
+// Helper event function
+function addEvent(evnt, elem, func) {
+    if (elem.addEventListener) {
+        elem.addEventListener(evnt, func, false);
+    } else if (elem.attachEvent) {
+        elem.attachEvent("on" + evnt, func);
+    } else {
+        elem[evnt] = func;
+    }
+}
+
 
 FastClick.attach(document.body);
 
-$('html').bind('keypress', function(e) {
+addEvent('keypress', document, function(e) {
    if(e.keyCode == 13) {
       return false;
    }
 });
 
-$('.js-ip-config').bind('click', function(e) {
+addEvent("click", ipConfigButton, function(e) {
     e.preventDefault();
     showIpConfig();
 });
@@ -21,11 +41,11 @@ if(localStorage.getItem('ipAddress') === null) {
 }
 
 function showIpConfig() {
-    $("#ipModal").modal();
-    $(".js-ip-save").on("click", function(e) {
+    $("ipModal").modal();
+    addEvent('click', ipModalSave, function(e) {
         e.preventDefault();
 
-        socket.emit('setIpAddress', $('#ipField').val());
+        socket.emit('setIpAddress', ipModalField.value);
         socket.on('ipAddressSetResult', function (result) {
             if(result.ip) {
                 localStorage.setItem('ipAddress', ipAddress);
@@ -38,14 +58,16 @@ function showIpConfig() {
 }
 
 function start() {
-    $(".btn-action").on("click", function(e) {
-        e.preventDefault();
-        $(this).blur();
+    Array.prototype.forEach.call(actionButtons, function(button) {
+        addEvent('click', button, function(e) {
+            e.preventDefault();
+            button.blur();
 
-        socket.emit('action', {action: $(this).data('action')});
+            socket.emit('action', { action: button.getAttribute('data-action') });
+        });
     });
 
     socket.on('volume', function(result) {
-        $(".vol").text("Volume - " + result.volume);
+        statusText.textContent = "Volume - " + result.volume;
     });
 }
