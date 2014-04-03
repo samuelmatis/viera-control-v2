@@ -25,13 +25,13 @@ var sendRequest = function(ipAddress, type, action, command, options) {
     }
 
     var body = "<?xml version='1.0' encoding='utf-8'?> \
-              <s:Envelope xmlns:s='http://schemas.xmlsoap.org/soap/envelope/' s:encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'> \
-                <s:Body> \
-                 <u:"+action+" xmlns:u='urn:"+urn+"'> \
-                  "+command+" \
-                 </u:"+action+"> \
-                </s:Body> \
-              </s:Envelope>";
+                <s:Envelope xmlns:s='http://schemas.xmlsoap.org/soap/envelope/' s:encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'> \
+                  <s:Body> \
+                    <u:" + action + " xmlns:u='urn:" + urn + "'> \
+                    " + command + " \
+                    </u:" + action + "> \
+                  </s:Body> \
+                </s:Envelope>";
 
     var postRequest = {
         host: ipAddress,
@@ -41,7 +41,7 @@ var sendRequest = function(ipAddress, type, action, command, options) {
         headers: {
             'Content-Length': body.length,
             'Content-Type': 'text/xml; charset="utf-8"',
-            'SOAPACTION': '"urn:'+urn+'#'+action+'"'
+            'SOAPACTION': '"urn:' + urn + '#' + action + '"'
         }
     };
 
@@ -76,7 +76,7 @@ io.sockets.on('connection', function(socket) {
             ipAddress = ip;
             socket.emit('ipAddressResult', { ip: ipAddress });
         } else {
-            socket.emit('ipAddressResult', { error: "Invalid IP address" });
+            socket.emit('ipAddressResult', { error: 'Invalid IP address' });
         }
     });
 
@@ -96,7 +96,7 @@ io.sockets.on('connection', function(socket) {
     socket.on('action', function(action) {
         var action = 'NRC_' + action['action'].toUpperCase() + '-ONOFF';
         if(!sendRequest(ipAddress, 'command', 'X_SendKey', '<X_KeyEvent>' + action + '</X_KeyEvent>')) {
-            socket.emit('actionError', { error: "internal error" });
+            socket.emit('actionError', { error: 'internal error' });
         }
     });
 
