@@ -1,3 +1,4 @@
+body { -ms-touch-action: none; }
 .container { width: 300px; margin-top: 20px; padding: 10px; background-color: #e5e5e5; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px; }
 .vol { display: block; text-align: center; margin-top: 20px; margin-bottom: 0px; }
 .row-top { margin-bottom: 20px !important; }
