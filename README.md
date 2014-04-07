@@ -9,16 +9,11 @@
 4. The application is now running on url [localhost:3000](http://localhost:3000)
 
 
-### Built application ###
-
-Built application is in the `/dist` folder <br/>
-If you want to run built application, run `cd dist && node server.js`
-
-
-### Rebuild application ###
+### Build application ###
 
 1. Run `grunt build` command
 2. Your built app is in the `/dist` folder
+3. If you want to run built application, run `cd dist && node server.js`
 
 _ _ _ 
 ### UI : ###
