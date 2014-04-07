@@ -10,12 +10,12 @@
 
 
 ### Built application ###
+
 Built application is in the `/dist` folder <br/>
 If you want to run built application, run `cd dist && node server.js`
 
 
-### Rebuild the application ###
-##### (Under construction)
+### Rebuild application ###
 
 1. Run `grunt build` command
 2. Your built app is in the `/dist` folder
