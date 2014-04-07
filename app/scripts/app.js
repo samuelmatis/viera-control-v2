@@ -1,8 +1,9 @@
 var socket = io.connect(window.location.href);
 
 var ipConfigButton = document.querySelector('.js-ip-config')
+    , configView = document.querySelector('#configView')
+    , appView = document.querySelector('#appView')
     , actionButtons = document.querySelectorAll('.btn-action')
-    , ipModal = document.querySelector('#ipModal')
     , ipModalField = document.querySelector('#ipField')
     , ipModalSave = document.querySelector('.js-ip-save')
     , statusText = document.querySelector('.vol')
@@ -19,49 +20,56 @@ function addEvent(evnt, elem, func) {
     }
 }
 
-addEvent('keypress', document, function(e) {
-   if(e.keyCode == 13) {
-      return false;
-   }
+Array.prototype.forEach.call(actionButtons, function(button) {
+    addEvent('click', button, function(e) {
+        e.preventDefault();
+        button.blur();
+
+        socket.emit('action', { action: button.getAttribute('data-action') });
+    });
 });
 
-addEvent("click", ipConfigButton, function(e) {
-    e.preventDefault();
-    showIpConfig();
-});
 
 if(localStorage.getItem('ipAddress') === null) {
     showIpConfig();
 } else {
-    socket.emit('setIpAddress', localStorage.getItem('ipAddress'));
     start();
 }
 
+function switchView(from, to) {
+    from.style.display = "none";
+    to.style.display = "block";
+}
+
 function showIpConfig() {
-    $("ipModal").modal();
+    switchView(appView, configView);
+
     addEvent('click', ipModalSave, function(e) {
         e.preventDefault();
 
         socket.emit('setIpAddress', ipModalField.value);
-        socket.on('ipAddressSetResult', function (result) {
+        socket.on('ipAddressResult', function (result) {
             if(result.ip) {
-                localStorage.setItem('ipAddress', ipAddress);
-                $("#ipModal").modal("hide");
+                localStorage.setItem('ipAddress', result.ip);
+                start();
             } else if (result.error) {
                 alert("Invalid IP address");
             }
         });
     });
-}
+};
 
 function start() {
-    Array.prototype.forEach.call(actionButtons, function(button) {
-        addEvent('click', button, function(e) {
-            e.preventDefault();
-            button.blur();
+    switchView(configView, appView);
 
-            socket.emit('action', { action: button.getAttribute('data-action') });
-        });
+    socket.emit('setIpAddress', localStorage.getItem('ipAddress'));
+
+    addEvent('click', ipConfigButton, function(e) {
+        e.preventDefault();
+        console.log("samo");
+
+        appView.style.display = "none";
+        showIpConfig();
     });
 
     socket.on('volume', function(result) {
