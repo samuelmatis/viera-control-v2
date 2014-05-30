@@ -1,12 +1,14 @@
+'use strict';
+
 var socket = io.connect(window.location.href);
 
-var ipConfigButton = document.querySelector('.js-ip-config')
-    , configView = document.querySelector('#configView')
-    , appView = document.querySelector('#appView')
-    , actionButtons = document.querySelectorAll('.btn-action')
-    , ipModalField = document.querySelector('#ipField')
-    , ipModalSave = document.querySelector('.js-ip-save')
-    , statusText = document.querySelector('.vol')
+var ipConfigButton = document.querySelector('.js-ip-config'),
+    configView = document.querySelector('#configView'),
+    appView = document.querySelector('#appView'),
+    actionButtons = document.querySelectorAll('.btn-action'),
+    ipModalField = document.querySelector('#ipField'),
+    ipModalSave = document.querySelector('.js-ip-save'),
+    statusText = document.querySelector('.vol');
 
 
 // Helper event function
@@ -14,7 +16,7 @@ function addEvent(evnt, elem, func) {
     if (elem.addEventListener) {
         elem.addEventListener(evnt, func, false);
     } else if (elem.attachEvent) {
-        elem.attachEvent("on" + evnt, func);
+        elem.attachEvent('on' + evnt, func);
     } else {
         elem[evnt] = func;
     }
@@ -36,9 +38,10 @@ if(localStorage.getItem('ipAddress') === null) {
     start();
 }
 
+
 function switchView(from, to) {
-    from.style.display = "none";
-    to.style.display = "block";
+    from.style.display = 'none';
+    to.style.display = 'block';
 }
 
 function showIpConfig() {
@@ -53,11 +56,11 @@ function showIpConfig() {
                 localStorage.setItem('ipAddress', result.ip);
                 start();
             } else if (result.error) {
-                alert("Invalid IP address");
+                alert('Invalid IP address');
             }
         });
     });
-};
+}
 
 function start() {
     switchView(configView, appView);
@@ -66,13 +69,12 @@ function start() {
 
     addEvent('click', ipConfigButton, function(e) {
         e.preventDefault();
-        console.log("samo");
 
-        appView.style.display = "none";
+        appView.style.display = 'none';
         showIpConfig();
     });
 
     socket.on('volume', function(result) {
-        statusText.textContent = "Volume - " + result.volume;
+        statusText.textContent = 'Volume - ' + result.volume;
     });
 }

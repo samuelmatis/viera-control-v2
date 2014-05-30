@@ -1,7 +1,9 @@
-var connect = require('connect')
-    , http = require('http')
-    , port = 3000
-    , app = connect().use(connect.static(__dirname + '/app'));
+'use strict';
+
+var connect = require('connect'),
+    http = require('http'),
+    port = 3000,
+    app = connect().use(connect.static(__dirname + '/app'));
 
 
 // Start the app
@@ -16,10 +18,10 @@ var io = require('socket.io')
 // A method for sending requests
 var sendRequest = function(ipAddress, type, action, command, options) {
     var url, urn;
-    if (type == 'command') {
+    if (type === 'command') {
         url = '/nrc/control_0';
         urn = 'panasonic-com:service:p00NetworkControl:1';
-    } else if (type == 'render') {
+    } else if (type === 'render') {
         url = '/dmr/control_0';
         urn = 'schemas-upnp-org:service:RenderingControl:1';
     }
@@ -47,9 +49,9 @@ var sendRequest = function(ipAddress, type, action, command, options) {
 
     var self = this;
     if (options !== undefined) {
-        self.callback = options['callback'];
+        self.callback = options.callback;
     } else {
-        self.callback = function(data) { console.log("Command:", command); };
+        self.callback = function() { console.log("Command:", command); };
     }
 
     var req = http.request(postRequest, function(res) {
@@ -81,7 +83,6 @@ io.sockets.on('connection', function(socket) {
     });
 
     function getVolume() {
-        var self = this;
         sendRequest(ipAddress, 'render', 'GetVolume', '<InstanceID>0</InstanceID><Channel>Master</Channel>', {
             callback: function(data){
                 var match = /<CurrentVolume>(\d*)<\/CurrentVolume>/gm.exec(data);
