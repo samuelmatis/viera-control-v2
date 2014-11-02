@@ -18,6 +18,7 @@ var io = require('socket.io')
 // A method for sending requests
 var sendRequest = function(ipAddress, type, action, command, options) {
     var url, urn;
+    if (typeof ipAddress === 'undefined') return;
     if (type === 'command') {
         url = '/nrc/control_0';
         urn = 'panasonic-com:service:p00NetworkControl:1';
@@ -47,7 +48,7 @@ var sendRequest = function(ipAddress, type, action, command, options) {
         }
     };
 
-    var self = this;
+    var self = {};
     if (options !== undefined) {
         self.callback = options.callback;
     } else {
