@@ -22,20 +22,10 @@ function addEvent(evnt, elem, func) {
     }
 }
 
-Array.prototype.forEach.call(actionButtons, function(button) {
-    addEvent('click', button, function(e) {
-        e.preventDefault();
-        button.blur();
-
-        socket.emit('action', { action: button.getAttribute('data-action') });
-    });
-});
-
-
-if(localStorage.getItem('ipAddress') === null) {
-    showIpConfig();
-} else {
+if(localStorage.getItem('ipAddress')) {
     start();
+} else {
+    showIpConfig();
 }
 
 
@@ -67,14 +57,22 @@ function start() {
 
     socket.emit('setIpAddress', localStorage.getItem('ipAddress'));
 
+    socket.on('volume', function(result) {
+        statusText.textContent = 'Volume - ' + result.volume;
+    });
+
+    [].forEach.call(actionButtons, function(button) {
+        addEvent('click', button, function(e) {
+            e.preventDefault();
+            button.blur();
+
+            socket.emit('action', { action: button.getAttribute('data-action') });
+        });
+    });
+
     addEvent('click', ipConfigButton, function(e) {
         e.preventDefault();
 
-        appView.style.display = 'none';
         showIpConfig();
-    });
-
-    socket.on('volume', function(result) {
-        statusText.textContent = 'Volume - ' + result.volume;
     });
 }

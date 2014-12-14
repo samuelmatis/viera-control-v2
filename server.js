@@ -52,7 +52,7 @@ var sendRequest = function(ipAddress, type, action, command, options) {
     if (options !== undefined) {
         self.callback = options.callback;
     } else {
-        self.callback = function() { console.log("Command:", command); };
+        self.callback = function() { console.log('Command:', command); };
     }
 
     var req = http.request(postRequest, function(res) {
@@ -87,13 +87,17 @@ io.sockets.on('connection', function(socket) {
         sendRequest(ipAddress, 'render', 'GetVolume', '<InstanceID>0</InstanceID><Channel>Master</Channel>', {
             callback: function(data){
                 var match = /<CurrentVolume>(\d*)<\/CurrentVolume>/gm.exec(data);
-                if(match !== null){
+                if(match !== null) {
                     socket.emit('volume', { volume: match[1] });
                 }
             }
         });
     }
-    setInterval(getVolume, 1000);
+
+    (function interval() {
+        getVolume();
+        setTimeout(interval, 1000);
+    })();
 
     socket.on('action', function(action) {
         var action = 'NRC_' + action['action'].toUpperCase() + '-ONOFF';
